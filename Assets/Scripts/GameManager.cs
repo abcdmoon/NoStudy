@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         uiManager.Init(this);
-        viewManager.Init();
+        viewManager.Init(uiManager);
     }
 
     // Update is called once per frame

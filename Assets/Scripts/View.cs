@@ -1,14 +1,20 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class View : MonoBehaviour
 {
     [SerializeField] GameObject viewRoot;
-    public ViewManager.Views viewName {  get; protected set; }
+    public abstract ViewManager.Views viewName {  get; }
     protected ViewManager viewManager;
+    protected UIManager uiManager;
+
+    [SerializeField] List<InteractiveUI> activeUIList;
+    IReadOnlyList<InteractiveUI> _activeUIList => activeUIList;
 
     public void Init(ViewManager viewManager)
     {
         this.viewManager = viewManager;
+        this.uiManager = viewManager.uiManager;
 
         viewRoot.SetActive(false);
     }
@@ -22,6 +28,7 @@ public abstract class View : MonoBehaviour
     public void onEnter()
     {
         viewRoot.SetActive(true);
+        uiManager.applyViewUISetting(_activeUIList);
     }
 
     public void OnLeave()
@@ -29,5 +36,5 @@ public abstract class View : MonoBehaviour
         viewRoot.SetActive(false);
     }
 
-    public abstract void onClickButton(UIManager.ButtonType buttonType);
+    public abstract void onInteractedUI(InteractiveUI interactiveUI);
 }

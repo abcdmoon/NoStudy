@@ -2,24 +2,23 @@ using UnityEngine;
 
 public class DeskView : View
 {
-    public DeskView()
+    public override ViewManager.Views viewName => ViewManager.Views.Desk;
+    public override void onInteractedUI(InteractiveUI interactiveUI)
     {
-        viewName = ViewManager.Views.Desk;
-    }
-
-    public override void onClickButton(UIManager.ButtonType type)
-    {
-        switch (type)
+        if(interactiveUI is MoveButton moveButton)
         {
-            case UIManager.ButtonType.Left:
-                {
-                    viewManager.moveView(viewName, ViewManager.Views.Init);
-                    return;
-                }
-            default:
-                {
-                    break;
-                }
+            switch (moveButton.type)
+            {
+                case MoveButton.ButtonType.Down:
+                    {
+                        viewManager.moveView(viewName, ViewManager.Views.Init);
+                        return;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
         }
     }
 

@@ -1,24 +1,30 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ViewManager : MonoBehaviour
 {
+    public UIManager uiManager { get; private set; }
+
     [SerializeField] List<View> viewList;
 
     public enum Views
     {
         None,
         Init,
-        Desk
+        Desk,
+        LeftWall
     }
     Dictionary<Views, View> viewDic = new Dictionary<Views, View>();
 
     private View presentView;
 
 
-    public void Init()
+    public void Init(UIManager uIManager)
     {
+
+        uiManager = uIManager;
+
+
         if (viewList == null)
         {
             viewList = new List<View>();
@@ -34,27 +40,21 @@ public class ViewManager : MonoBehaviour
     }
 
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void moveView(Views past,Views next)
     {
         if(past!=Views.None)
         {
             presentView.OnLeave();
         }
-        presentView = viewDic[next];
         if(next!=Views.None)
         {
+            presentView = viewDic[next];
             presentView.onEnter();
         }
     }
 
-    public void onClickButton(UIManager.ButtonType type)
+    public void onInteractedUI(InteractiveUI interactiveUI)
     {
-        presentView.onClickButton(type);
+        presentView.onInteractedUI(interactiveUI);
     }
 }

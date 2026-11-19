@@ -1,16 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public enum ButtonType
-    {
-        Right,
-        Left
-    }
 
-    [SerializeField] Dictionary<ButtonType, Button> buttons;
+    [SerializeField] Canvas mainCanvas;
+    [SerializeField] List<InteractiveUI> interactiveUIList;
 
     private GameManager gameManager;
 
@@ -18,14 +15,31 @@ public class UIManager : MonoBehaviour
     {
         this.gameManager = gameManager;
 
-        foreach (var (type,button) in buttons)
+        foreach (InteractiveUI ui in interactiveUIList)
         {
-            button.onClick.AddListener(()=>onClickButton(type));
+            ui.Init(this);
         }
+
     }
 
-    private void onClickButton(ButtonType type)
+    public void onInteracted(InteractiveUI interactiveUI)
     {
-        gameManager.viewManager.onClickButton(type);
+        gameManager.viewManager.onInteractedUI(interactiveUI);
+    }
+
+    public void applyViewUISetting(IReadOnlyList<InteractiveUI> setting)
+    {
+        foreach(InteractiveUI ui in interactiveUIList)
+        {
+            if (setting.Contains(ui))
+            {
+                
+                ui.enable();
+            }
+            else
+            {
+                ui.disable();
+            }
+        }
     }
 }
