@@ -16,7 +16,7 @@ public class ViewManager : MonoBehaviour
     }
     Dictionary<Views, View> viewDic = new Dictionary<Views, View>();
 
-    private View presentView;
+    public View presentView {  get; private set; }
 
 
     public void Init(UIManager uIManager)
@@ -44,12 +44,12 @@ public class ViewManager : MonoBehaviour
     {
         if(past!=Views.None)
         {
-            presentView.OnLeave();
+            presentView.onLeaveView();
         }
         if(next!=Views.None)
         {
             presentView = viewDic[next];
-            presentView.onEnter();
+            presentView.onEnterView();
         }
     }
 
