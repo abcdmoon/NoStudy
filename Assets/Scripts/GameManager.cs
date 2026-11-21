@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [field:SerializeField] public ViewManager viewManager { get; private set; }
     [SerializeField] UIManager uiManager;
+    [SerializeField] StageManager stageManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         uiManager.Init(this);
-        viewManager.Init(uiManager);
+        stageManager.Init(uiManager);
     }
 
     // Update is called once per frame

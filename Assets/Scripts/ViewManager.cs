@@ -4,26 +4,18 @@ using UnityEngine;
 public class ViewManager : MonoBehaviour
 {
     public UIManager uiManager { get; private set; }
+    public Stage stage { get; private set; }
 
     [SerializeField] List<View> viewList;
-
-    public enum Views
-    {
-        None,
-        Init,
-        Desk,
-        LeftWall
-    }
-    Dictionary<Views, View> viewDic = new Dictionary<Views, View>();
+    [SerializeField] View initialView;
 
     public View presentView {  get; private set; }
 
 
-    public void Init(UIManager uIManager)
+    public void Init(UIManager uiManager,Stage stage)
     {
-
-        uiManager = uIManager;
-
+        this.uiManager = uiManager;
+        this.stage = stage;
 
         if (viewList == null)
         {
@@ -32,29 +24,23 @@ public class ViewManager : MonoBehaviour
 
         foreach (View view in viewList)
         {
-            viewDic.Add(view.viewName, view);
-            view.Init(this);
+            view.Init(this,stage);
         }
 
-        moveView(Views.None,Views.Init);
+        moveView(initialView);
     }
 
 
-    public void moveView(Views past,Views next)
+    public void moveView(View next)
     {
-        if(past!=Views.None)
+        if(presentView!=null)
         {
             presentView.onLeaveView();
         }
-        if(next!=Views.None)
+        presentView = next;
+        if(presentView!=null)
         {
-            presentView = viewDic[next];
             presentView.onEnterView();
         }
-    }
-
-    public void onInteractedUI(InteractiveUI interactiveUI)
-    {
-        presentView.onInteractedUI(interactiveUI);
     }
 }

@@ -3,23 +3,19 @@ using UnityEngine.UI;
 
 public class MoveButton : InteractiveUI
 {
-    public enum ButtonType
-    {
-        Right,
-        Left, Up, Down
-    }
+    [SerializeField] View targetView;
 
-    [field:SerializeField] public ButtonType type { get;private set; }
-
-    protected override void onInit(UIManager uIManager)
+    protected override void onInit()
     {
         Button button = GetComponent<Button>();
         if (button != null)
         {
-            button.onClick.AddListener(onInteracted);
+            button.onClick.AddListener(()=>stage.viewManager.moveView(targetView));
         }else
         {
             Debug.LogError(this.gameObject.name + "にボタンがアタッチされていません！");
         }
     }
+
+
 }

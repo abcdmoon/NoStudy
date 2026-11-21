@@ -2,51 +2,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public abstract class View : MonoBehaviour
+public class View : MonoBehaviour
 {
-    [SerializeField] GameObject viewRoot;
-    public abstract ViewManager.Views viewName {  get; }
+    GameObject viewRoot;
+    [SerializeField] GameObject uiRoot;
     protected ViewManager viewManager;
     protected UIManager uiManager;
+    protected Stage stage;
 
     [SerializeField] List<InteractiveUI> activeUIList;
+    [SerializeField] List<InteractiveObject> activeObjects;
 
-    IReadOnlyList<InteractiveUI> _activeUIList => activeUIList;
 
-    public void Init(ViewManager viewManager)
+    public void Init(ViewManager viewManager,Stage stage)
     {
+        viewRoot = this.gameObject;
+
         this.viewManager = viewManager;
         this.uiManager = viewManager.uiManager;
+        this.stage = stage;
 
         viewRoot.SetActive(false);
+        uiRoot.SetActive(false);
 
-        onInit();
-    }
-
-    protected abstract void onInit();
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        foreach(InteractiveUI ui in activeUIList)
+        {
+            ui.Init(stage, this);
+        }
+        foreach(InteractiveObject obj in activeObjects)
+        {
+            obj.Init(stage, this);
+        }
     }
 
     public void onEnterView()
     {
         viewRoot.SetActive(true);
-        uiManager.applyViewUISetting(_activeUIList);
+        uiRoot.SetActive(true);
     }
 
     public void onLeaveView()
     {
         viewRoot.SetActive(false);
+        uiRoot.SetActive(false);
     }
 
-    public abstract void onInteractedUI(InteractiveUI interactiveUI);
-
-    public abstract void onPointerClick(PointerEventData eventData, InteractiveObject interactiveObject);
-
-    public abstract void onPointerEnter(PointerEventData eventData, InteractiveObject interactiveObject);
-
-    public abstract void onPointerExit(PointerEventData eventData, InteractiveObject interactiveObject);
 }
