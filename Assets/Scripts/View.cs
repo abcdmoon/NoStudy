@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using Objects;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class View : MonoBehaviour
 {
@@ -10,28 +10,42 @@ public class View : MonoBehaviour
     protected UIManager uiManager;
     protected Stage stage;
 
-    [SerializeField] List<InteractiveUI> activeUIList;
-    [SerializeField] List<InteractiveObject> activeObjects;
+    List<InteractiveUI> activeUIList = new List<InteractiveUI>();
+    List<InteractiveObject> activeObjects = new List<InteractiveObject>();
+    List<DynamicObject> dynamicObjects = new List<DynamicObject>();
 
 
-    public void Init(ViewManager viewManager,Stage stage)
+    public void Init(Stage stage)
     {
         viewRoot = this.gameObject;
+        if(uiRoot == null)
+        {
+            Debug.LogError(this.gameObject.name + "ビューにUIルートがアタッチされていません！");
+        }
 
-        this.viewManager = viewManager;
-        this.uiManager = viewManager.uiManager;
         this.stage = stage;
+        viewManager = stage.viewManager;
+        uiManager = stage.uiManager;
 
         viewRoot.SetActive(false);
         uiRoot.SetActive(false);
 
-        foreach(InteractiveUI ui in activeUIList)
-        {
-            ui.Init(stage, this);
-        }
+        viewRoot.GetComponentsInChildren(true, activeObjects);
+        viewRoot.GetComponentsInChildren(true, dynamicObjects);
+        uiRoot.GetComponentsInChildren(true,activeUIList);
+
         foreach(InteractiveObject obj in activeObjects)
         {
             obj.Init(stage, this);
+        }
+
+        foreach (DynamicObject obj in dynamicObjects)
+        {
+            obj.Init(stage, this);
+        }
+        foreach (InteractiveUI ui in activeUIList)
+        {
+            ui.Init(stage, this);
         }
     }
 

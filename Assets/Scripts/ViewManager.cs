@@ -1,20 +1,17 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
-public class ViewManager : MonoBehaviour
+public class ViewManager
 {
-    public UIManager uiManager { get; private set; }
-    public Stage stage { get; private set; }
+    Stage stage;
 
-    [SerializeField] List<View> viewList;
-    [SerializeField] View initialView;
+    List<View> viewList;
 
     public View presentView {  get; private set; }
 
 
-    public void Init(UIManager uiManager,Stage stage)
+    public void Init(Stage stage)
     {
-        this.uiManager = uiManager;
         this.stage = stage;
 
         if (viewList == null)
@@ -22,18 +19,19 @@ public class ViewManager : MonoBehaviour
             viewList = new List<View>();
         }
 
+        stage.gameObject.GetComponentsInChildren<View>(true,viewList);
+
         foreach (View view in viewList)
         {
-            view.Init(this,stage);
+            view.Init(stage);
         }
-
-        moveView(initialView);
     }
 
 
     public void moveView(View next)
     {
-        if(presentView!=null)
+        if (next == null) { Debug.LogError("moveView: 遷移先が未設定です"); return; }
+        if (presentView!=null)
         {
             presentView.onLeaveView();
         }
